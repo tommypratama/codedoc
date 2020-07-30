@@ -1,12 +1,12 @@
 module.exports = {
   title: "Codedoc",
-  tagline: "The tagline of my site",
-  url: "https://your-docusaurus-test-site.com",
+  tagline: "Code Documentation",
+  url: "https://codedoc.vercel.app",
   baseUrl: "/",
   onBrokenLinks: "throw",
   favicon: "img/favicon.ico",
-  organizationName: "facebook", // Usually your GitHub org/user name.
-  projectName: "docusaurus", // Usually your repo name.
+  organizationName: "tommypratama", // Usually your GitHub org/user name.
+  projectName: "codedoc", // Usually your repo name.
   themeConfig: {
     navbar: {
       title: "Codedoc",
@@ -14,7 +14,14 @@ module.exports = {
         alt: "My Site Logo",
         src: "img/logo.svg",
       },
-      items: [],
+      items: [
+        {
+          href: 'https://github.com/tommypratama/codedoc',
+          position: 'right',
+          className: 'header-github-link',
+          'aria-label': 'GitHub repository',
+        },
+      ],
     },
     prism: {
       theme: require("prism-react-renderer/themes/github"),
@@ -36,13 +43,13 @@ module.exports = {
           sidebarPath: require.resolve("./sidebars.js"),
           // Please change this to your repo.
           editUrl:
-            "https://github.com/facebook/docusaurus/edit/master/website/",
+            "https://github.com/tommypratama/codedoc/tree/master",
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            "https://github.com/facebook/docusaurus/edit/master/website/blog/",
+            "https://github.com/tommypratama/codedoc/tree/master",
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
