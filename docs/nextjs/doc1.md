@@ -4,7 +4,7 @@ title: Create a Next.js App
 slug: create-a-nextjs-App
 ---
 
-Untuk membangun aplikasi web lengkap dengan Bereaksi dari awal, ada banyak detail penting yang perlu Anda pertimbangkan:
+Untuk membangun aplikasi web lengkap dengan React dari awal, ada banyak detail penting yang perlu Anda pertimbangkan:
 
 - Kode harus dibundel menggunakan bundler seperti webpack dan ditransformasikan menggunakan kompiler seperti Babel.
 - Anda perlu melakukan optimasi produksi seperti **code splitting**.
