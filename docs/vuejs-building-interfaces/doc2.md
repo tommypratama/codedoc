@@ -40,7 +40,7 @@ Berikut adalah contoh untuk menggunakan data pada component vue
 <script>
 export default {
   name: "App",
-  // highlight-next-line
+  // highlight-start
   data: function() {
     return {
       title: "Hello Worlds"
