@@ -8,5 +8,6 @@ module.exports = {
       "vuejs-building-interfaces/doc4",
       "vuejs-building-interfaces/doc5",
     ],
+    Clocks: ["clocks/doc1"],
   },
 };
