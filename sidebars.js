@@ -8,6 +8,6 @@ module.exports = {
       "vuejs-building-interfaces/doc4",
       "vuejs-building-interfaces/doc5",
     ],
-    Clocks: ["clocks/doc1"],
+    "Next.js": ["nextjs/doc1", "nextjs/doc2", "nextjs/doc3", "nextjs/doc4", "nextjs/doc5", "nextjs/doc6", "nextjs/doc7"],
   },
 };
