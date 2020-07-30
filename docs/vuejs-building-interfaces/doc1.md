@@ -4,7 +4,7 @@ title: Getting Started
 slug: getting-started
 ---
 
-### Install Vue CLI
+## Install Vue CLI
 
 Check Vue CLI apakah sudah terinstall?
 
@@ -51,3 +51,21 @@ Buka alamat [localhost](http://localhost) di browser
 ```bash
 http://localhost:8000
 ```
+
+## Installing Custom Modules
+
+```bash
+npm i --save bootstrap jquery popper.js
+```
+
+```bash
+npm i --save lodash moment axios
+```
+
+```bash
+npm i --save @fortawesome/fontawesome-free @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/vue-fontawesome
+```
+
+**Reference**
+
+- [https://github.com/FortAwesome/vue-fontawesome](https://github.com/FortAwesome/vue-fontawesome)
