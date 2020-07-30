@@ -269,6 +269,7 @@ Lalu pada `App.vue` gunakan library axios untuk mengimport data
 
 <script>
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+// highlight-next-line
 import axios from "axios";
 
 export default {
