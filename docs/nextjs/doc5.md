@@ -132,6 +132,7 @@ export function getAllPostIds() {
 
 :::note
 Daftar yang dikembalikan _bukan_ hanya array string - itu **harus** berupa array objek yang terlihat seperti komentar di atas. Setiap objek harus memiliki key `params` dan berisi objek dengan key `id` (karena kita menggunakan nama file `[id]`). Kalau tidak, `getStaticPaths` akan gagal.
+:::
 
 ````
 
@@ -245,3 +246,82 @@ Sekali lagi, inilah ringkasan grafis dari apa yang telah kita lakukan:
 ![](https://nextjs.org/static/images/learn/dynamic-routes/how-to-dynamic-routes.png)
 
 Tetapi, kita masih belum menampilkan **konten markdown** pada blog. Jadi mari kita lakukan ini selanjutnya.
+
+### Render Markdown
+
+Untuk membuat konten markdown, kita akan menggunakan library `remark`. Pertama, mari kita instal:
+
+```bash
+npm install remark remark-html
+```
+
+Lalu, impor di `lib/posts.js`:
+
+```javascript
+import remark from 'remark'
+import html from 'remark-html'
+```
+
+Dan perbarui `getPostData()` sebagai berikut untuk digunakan `remark`.
+
+```javascript
+export async function getPostData(id) {
+  const fullPath = path.join(postsDirectory, `${id}.md`)
+  const fileContents = fs.readFileSync(fullPath, 'utf8')
+
+  // Use gray-matter to parse the post metadata section
+  const matterResult = matter(fileContents)
+
+  // Use remark to convert markdown into HTML string
+  const processedContent = await remark()
+    .use(html)
+    .process(matterResult.content)
+  const contentHtml = processedContent.toString()
+
+  // Combine the data with the id and contentHtml
+  return {
+    id,
+    contentHtml,
+    ...matterResult.data
+  }
+}
+```
+
+:::note
+Kita menambahkan keyword **`async`** ke **`getPostData`** karena kita perlu menggunakan **`await`** untuk **`remark`**.
+:::
+
+Itu berarti kita perlu pembaruan `getStaticProps` dalam `pages/posts/[id].js` pada penggunaan `await` saat memanggil `getPostData`:
+
+```javascript
+export async function getStaticProps({ params }) {
+  // Add the "await" keyword like this:
+  const postData = await getPostData(params.id)
+  // ...
+}
+```
+
+Akhirnya, perbarui komponen `Post` untuk di render `contentHtml` menggunakan `dangerouslySetInnerHTML`:
+
+```javascript
+export default function Post({ postData }) {
+  return (
+    <Layout>
+      {postData.title}
+      <br />
+      {postData.id}
+      <br />
+      {postData.date}
+      <br />
+      <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
+    </Layout>
+  )
+}
+```
+
+Coba kunjungi url ini lagi:
+
+- [http://localhost:3000/posts/ssg-ssr](http://localhost:3000/posts/ssg-ssr)
+- [http://localhost:3000/posts/pre-rendering](http://localhost:3000/posts/pre-rendering)
+
+Anda sekarang harus melihat konten blog. Kita hampir selesai! Mari kita memoles setiap halaman berikutnya.
