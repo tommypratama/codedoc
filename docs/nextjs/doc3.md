@@ -289,3 +289,342 @@ Untuk meringkas apa yang telah kita pelajari sejauh ini:
 
 - Untuk menggunakan CSS Modules, impor file CSS dengan nama `*.module.css` dari komponen apa pun.
 - Untuk menggunakan CSS global, impor file CSS di `pages/_app.js`.
+
+## Polishing Layout
+
+Sejauh ini, kami hanya menambahkan kode React dan CSS minimal hanya untuk menggambarkan konsep seperti CSS Modules. Sebelum kita melanjutkan ke pelajaran kita berikutnya (data fetching), mari kita poles styling dan kode halaman kita.
+
+### Unduh Gambar Profil Anda
+
+Pertama, kami akan menggunakan gambar profil Anda untuk desain akhir.
+
+- **Unduh** gambar profil Anda dari GitHub, Twitter, LinkedIn atau di tempat lainnya.
+- Buat direktori `images` di dalam direktori `public`.
+- Simpan gambar seperti `profile.jpg` dalam direktori `public/images`.
+- Ukuran gambar bisa sekitar 400px x 400px.
+- Anda dapat menghapus file logo SVG yang tidak digunakan langsung di dalam direktori `public`.
+
+### Memperbarui `components/layout.module.css`
+
+Kedua, kita akan menggunakan kode berikut untuk `components/layout.module.css` - cukup salin dan tempel. Ini menambahkan beberapa style yang lebih halus.
+
+```css title="components/layout.module.css"
+.container {
+  max-width: 36rem;
+  padding: 0 1rem;
+  margin: 3rem auto 6rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.headerImage {
+  width: 6rem;
+  height: 6rem;
+}
+
+.headerHomeImage {
+  width: 8rem;
+  height: 8rem;
+}
+
+.backToHome {
+  margin: 3rem 0 0;
+}
+```
+
+### Membuat `styles/utils.module.css`
+
+Ketiga, mari kita buat satu set class utilitas CSS untuk tipografi dan lainnya yang akan berguna di banyak komponen.
+
+Mari menambahkannya sebagai CSS Modules di `styles/utils.module.css`.
+
+```css title="styles/utils.module.css"
+.heading2Xl {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.05rem;
+  margin: 1rem 0;
+}
+
+.headingXl {
+  font-size: 2rem;
+  line-height: 1.3;
+  font-weight: 800;
+  letter-spacing: -0.05rem;
+  margin: 1rem 0;
+}
+
+.headingLg {
+  font-size: 1.5rem;
+  line-height: 1.4;
+  margin: 1rem 0;
+}
+
+.headingMd {
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+.borderCircle {
+  border-radius: 9999px;
+}
+
+.colorInherit {
+  color: inherit;
+}
+
+.padding1px {
+  padding-top: 1px;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.listItem {
+  margin: 0 0 1.25rem;
+}
+
+.lightText {
+  color: #999;
+}
+```
+
+### Memperbarui `components/layout.js`
+
+Keempat, salin kode berikut ke `components/layout.js` dan **ubah** `Your Name` di bagian atas nama Anda. Inilah yang baru:
+
+- `meta` tag (seperti `og:image`)
+- Boolean `home` prop yang akan menyesuaikan ukuran judul dan gambar
+- Link "Back to home" di bagian bawah jika `home` adalah `false`
+
+```javascript title="components/layout.js"
+import Head from 'next/head'
+import styles from './layout.module.css'
+import utilStyles from '../styles/utils.module.css'
+import Link from 'next/link'
+
+const name = 'Your Name'
+export const siteTitle = 'Next.js Sample Website'
+
+export default function Layout({ children, home }) {
+  return (
+    <div className={styles.container}>
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+        <meta
+          name="description"
+          content="Learn how to build a personal website using Next.js"
+        />
+        <meta
+          property="og:image"
+          content={`https://og-image.now.sh/${encodeURI(
+            siteTitle
+          )}.png?theme=light&md=0&fontSize=75px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fnextjs-black-logo.svg`}
+        />
+        <meta name="og:title" content={siteTitle} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Head>
+      <header className={styles.header}>
+        {home ? (
+          <>
+            <img
+              src="/images/profile.jpg"
+              className={`${styles.headerHomeImage} ${utilStyles.borderCircle}`}
+              alt={name}
+            />
+            <h1 className={utilStyles.heading2Xl}>{name}</h1>
+          </>
+        ) : (
+          <>
+            <Link href="/">
+              <a>
+                <img
+                  src="/images/profile.jpg"
+                  className={`${styles.headerImage} ${utilStyles.borderCircle}`}
+                  alt={name}
+                />
+              </a>
+            </Link>
+            <h2 className={utilStyles.headingLg}>
+              <Link href="/">
+                <a className={utilStyles.colorInherit}>{name}</a>
+              </Link>
+            </h2>
+          </>
+        )}
+      </header>
+      <main>{children}</main>
+      {!home && (
+        <div className={styles.backToHome}>
+          <Link href="/">
+            <a>← Back to home</a>
+          </Link>
+        </div>
+      )}
+    </div>
+  )
+}
+```
+
+### Memperbarui `pages/index.js`
+
+Akhirnya, mari perbarui beranda.
+
+Ubah `pages/index.js` sebagai berikut:
+
+```javascript title="pages/index.js"
+import Head from 'next/head'
+import Layout, { siteTitle } from '../components/layout'
+import utilStyles from '../styles/utils.module.css'
+
+export default function Home() {
+  return (
+    <Layout home>
+      <Head>
+        <title>{siteTitle}</title>
+      </Head>
+      <section className={utilStyles.headingMd}>
+        <p>[Your Self Introduction]</p>
+        <p>
+          (This is a sample website - you’ll be building a site like this on{' '}
+          <a href="https://nextjs.org/learn">our Next.js tutorial</a>.)
+        </p>
+      </section>
+    </Layout>
+  )
+}
+```
+
+Kemudian gantilah `[Your Self Introduction]` dengan pengenalan diri Anda.
+
+## Tips Styling
+
+Berikut adalah beberapa tip styling yang mungkin bisa membantu.
+
+:::note
+Anda bisa membaca bagian berikut. Tidak perlu melakukan perubahan pada aplikasi sebelumnya!
+:::
+
+### Menggunakan library `classnames` untuk beralih class
+
+`classnames` adalah library sederhana yang memungkinkan Anda beralih nama class dengan mudah. Anda dapat menginstalnya menggunakan 
+
+```bash
+npm install classnames
+```
+
+atau 
+
+```bash
+yarn add classnames
+```
+
+Silakan lihat [README](https://github.com/JedWatson/classnames) untuk detailnya, tapi inilah penggunaan dasar:
+
+- Misalkan Anda ingin membuat komponen `Alert` yang menerima `type`, yang bisa `'success'` atau `'error'`.
+- Jika itu `'success'`, Anda ingin warna teks menjadi hijau. Jika itu `'error'`, Anda ingin warna teks menjadi merah.
+
+Pertama-tama Anda dapat menulis CSS Modules (misalnya `alert.module.css`) seperti ini:
+
+```css
+.success {
+  color: green;
+}
+.error {
+  color: red;
+}
+```
+
+Dan gunakan `classnames` seperti ini:
+
+```css
+import styles from './alert.module.css'
+import cn from 'classnames'
+
+export default function Alert({ children, type }) {
+  return (
+    <div
+      className={cn({
+        [styles.success]: type === 'success',
+        [styles.error]: type === 'error'
+      })}
+    >
+      {children}
+    </div>
+  )
+}
+```
+
+### Menyesuaikan Konfigurasi PostCSS
+
+Di luar kotak, tanpa konfigurasi, Next.js mengkompilasi CSS menggunakan [PostCSS](https://postcss.org/) .
+
+Untuk mengkustomisasi konfigurasi PostCSS, Anda dapat membuat file top-level bernama `postcss.config.js`. Ini berguna jika Anda menggunakan library seperti [Tailwind CSS](https://tailwindcss.com/).
+
+Berikut adalah instruksi untuk menggunakan [CSS Tailwind](https://tailwindcss.com/). Sebaiknya gunakan `postcss-preset-env` dan `postcss-flexbugs-fixes` untuk mencocokkan [perilaku default Next.js ini](https://nextjs.org/docs/advanced-features/customizing-postcss-config#default-behavior). Pertama, instal paket:
+
+```bash
+npm install tailwindcss postcss-preset-env postcss-flexbugs-fixes
+```
+
+Kemudian tulis kode berikut ini pada `postcss.config.js`:
+
+```javascript title="postcss.config.js"
+module.exports = {
+  plugins: [
+    'tailwindcss',
+    'postcss-flexbugs-fixes',
+    [
+      'postcss-preset-env',
+      {
+        autoprefixer: {
+          flexbox: 'no-2009'
+        },
+        stage: 3,
+        features: {
+          'custom-properties': false
+        }
+      }
+    ]
+  ]
+}
+```
+
+Disarankan untuk menghapus CSS yang tidak digunakan dengan menetapkan opsi `purge` pada `tailwind.config.js`:
+
+```javascript title="tailwind.config.js"
+module.exports = {
+  purge: [
+    // Use *.tsx if using TypeScript
+    './pages/**/*.js',
+    './components/**/*.js'
+  ]
+  // ...
+}
+```
+
+:::note
+Untuk mempelajari lebih lanjut tentang konfigurasi PostCSS khusus, [lihat dokumentasi](https://nextjs.org/docs/advanced-features/customizing-postcss-config).
+:::
+
+### Menggunakan Sass
+
+Di luar kotak, Next.js memungkinkan Anda mengimpor [Sass](https://sass-lang.com/) menggunakan ekstensi `.scss` dan `.sass`. Anda dapat menggunakan component-level Sass melalui CSS Modules dan ekstensi `.module.scss` atau `.module.sass`.
+
+Sebelum Anda dapat menggunakan dukungan Sass Next.js yang terintegrasi, pastikan untuk menginstal sass:
+
+```bash
+npm install sass
+```
+
+:::note
+Untuk mempelajari lebih lanjut tentang Dukungan CSS dan CSS Modules bawaan Next.js, [lihat dokumentasi](https://nextjs.org/docs/basic-features/built-in-css-support).
+:::
