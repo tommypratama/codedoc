@@ -197,12 +197,12 @@ Dan buat `getStaticProps` yang memanggil fungsi ini:
 
 ```javascript
 export async function getStaticProps({ params }) {
-  const postData = getPostData(params.id)
+  const postData = getPostData(params.id);
   return {
     props: {
       postData
     }
-  }
+  };
 }
 ```
 
@@ -218,7 +218,7 @@ export default function Post({ postData }) {
       <br />
       {postData.date}
     </Layout>
-  )
+  );
 }
 ```
 
@@ -258,32 +258,32 @@ npm install remark remark-html
 Lalu, impor di `lib/posts.js`:
 
 ```javascript
-import remark from 'remark'
-import html from 'remark-html'
+import remark from "remark";
+import html from "remark-html";
 ```
 
 Dan perbarui `getPostData()` sebagai berikut untuk digunakan `remark`.
 
 ```javascript
 export async function getPostData(id) {
-  const fullPath = path.join(postsDirectory, `${id}.md`)
-  const fileContents = fs.readFileSync(fullPath, 'utf8')
+  const fullPath = path.join(postsDirectory, `${id}.md`);
+  const fileContents = fs.readFileSync(fullPath, "utf8");
 
   // Use gray-matter to parse the post metadata section
-  const matterResult = matter(fileContents)
+  const matterResult = matter(fileContents);
 
   // Use remark to convert markdown into HTML string
   const processedContent = await remark()
     .use(html)
-    .process(matterResult.content)
-  const contentHtml = processedContent.toString()
+    .process(matterResult.content);
+  const contentHtml = processedContent.toString();
 
   // Combine the data with the id and contentHtml
   return {
     id,
     contentHtml,
     ...matterResult.data
-  }
+  };
 }
 ```
 
@@ -296,7 +296,7 @@ Itu berarti kita perlu pembaruan `getStaticProps` dalam `pages/posts/[id].js` pa
 ```javascript
 export async function getStaticProps({ params }) {
   // Add the "await" keyword like this:
-  const postData = await getPostData(params.id)
+  const postData = await getPostData(params.id);
   // ...
 }
 ```
@@ -315,7 +315,7 @@ export default function Post({ postData }) {
       <br />
       <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
     </Layout>
-  )
+  );
 }
 ```
 
@@ -325,3 +325,225 @@ Coba kunjungi url ini lagi:
 - [http://localhost:3000/posts/pre-rendering](http://localhost:3000/posts/pre-rendering)
 
 Anda sekarang harus melihat konten blog. Kita hampir selesai! Mari kita memoles setiap halaman berikutnya.
+
+## Polishing the Post Page
+
+### Menambahkan titleke Halaman Posting
+
+Di `pages/posts/[id].js`, mari tambahkan tag `title` menggunakan post data. Impor `next/head` dan tambahkan tag `title`:
+
+```javascript
+import Head from "next/head";
+
+export default function Post({ postData }) {
+  return (
+    <Layout>
+      <Head>
+        <title>{postData.title}</title>
+      </Head>
+      ...
+    </Layout>
+  );
+}
+```
+
+### Memformat Tanggal
+
+Untuk memformat tanggal, kita akan menggunakan library `date-fns`. Pertama, instal:
+
+```bash
+npm install date-fns
+```
+
+Selanjutnya, buat komponen `Date` di `components/date.js`:
+
+```javascript
+import { parseISO, format } from "date-fns";
+
+export default function Date({ dateString }) {
+  const date = parseISO(dateString);
+  return <time dateTime={dateString}>{format(date, "LLLL d, yyyy")}</time>;
+}
+```
+
+Dan gunakan di `pages/posts/[id].js`:
+
+```javascript
+// Add this line to imports
+import Date from "../../components/date";
+
+export default function Post({ postData }) {
+  return (
+    <Layout>
+      ...
+      {/* Replace {postData.date} with this */}
+      <Date dateString={postData.date} />
+      ...
+    </Layout>
+  );
+}
+```
+
+Jika Anda mengakses [http://localhost:3000/posts/pre-rendering](http://localhost:3000/posts/pre-rendering), sekarang Anda akan melihat tanggal yang ditulis sebagai **“January 1, 2020”**.
+
+### Menambahkan CSS
+
+Akhirnya, mari kita tambahkan beberapa CSS. Di `pages/posts/[id].js`, letakkan semuanya di bawah tag `article` dan gunakan CSS Modules seperti di bawah ini:
+
+```javascript
+// Add this line
+import utilStyles from "../../styles/utils.module.css";
+
+export default function Post({ postData }) {
+  return (
+    <Layout>
+      <Head>
+        <title>{postData.title}</title>
+      </Head>
+      <article>
+        <h1 className={utilStyles.headingXl}>{postData.title}</h1>
+        <div className={utilStyles.lightText}>
+          <Date dateString={postData.date} />
+        </div>
+        <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
+      </article>
+    </Layout>
+  );
+}
+```
+
+Jika Anda mengakses [http://localhost:3000/posts/pre-rendering](http://localhost:3000/posts/pre-rendering) sebelumnya, halaman tersebut sekarang akan terlihat sedikit lebih baik.
+
+## Polishing the Index Page
+
+Sebagai langkah terakhir, mari perbarui halaman indeks ( `pages/index.js` ).
+
+Secara khusus, kita perlu menambahkan tautan ke setiap halaman posting. Kita akan menggunakan komponen `Link`, tetapi kita perlu melakukan sesuatu yang berbeda kali ini.
+
+Untuk menautkan ke halaman dengan rute dinamis, Anda perlu menggunakan komponen `Link` secara berbeda. Dalam kasus ini, untuk ditautkan ke `/posts/ssg-ssr`, Anda harus menulis seperti ini:
+
+```javascript
+<Link href="/posts/[id]" as="/posts/ssg-ssr">
+  <a>...</a>
+</Link>
+```
+
+Seperti yang anda lihat, Anda perlu menggunakan `[id]` untuk `href` dan aktual path (`ssg-ssr`) untuk `as` prop.
+
+Mari kita implementasikan. Pertama, impor `Link` dan `Date` di `pages/index.js`:
+
+```javascript
+import Link from "next/link";
+import Date from "../components/date";
+```
+
+Kemudian, pada komponen `Home`, ganti `li` tag dengan kode berikut ini:
+
+```javascript
+<li className={utilStyles.listItem} key={id}>
+  <Link href="/posts/[id]" as={`/posts/${id}`}>
+    <a>{title}</a>
+  </Link>
+  <br />
+  <small className={utilStyles.lightText}>
+    <Date dateString={date} />
+  </small>
+</li>
+```
+
+Seharusnya sekarang memiliki tautan ke setiap artikel.
+
+:::note
+Jika ada yang tidak berfungsi, pastikan kode Anda [terlihat seperti ini](https://github.com/vercel/next-learn-starter/tree/master/api-routes-starter).
+:::
+
+Sebelum kita mengakhiri pelajaran ini, mari kita bicara tentang beberapa tips untuk menggunakan rute dinamis di halaman berikutnya.
+
+### Detail Rute Dinamis
+
+Anda dapat memperoleh informasi mendalam tentang rute dinamis dalam dokumentasi berikut:
+
+- [Data Fetching](https://nextjs.org/docs/basic-features/data-fetching)
+- [Dynamic Routes](https://nextjs.org/docs/routing/dynamic-routes)
+
+Tapi di sini ada beberapa informasi penting yang harus Anda ketahui tentang rute dinamis.
+
+### Fetch External API or Query Database
+
+Seperti `getStaticProps`, `getStaticPaths` dapat mengambil data dari sumber data apa pun. Dalam contoh ini, `getAllPostIds` (yang digunakan oleh `getStaticPaths`) dapat mengambil dari API endpoint eksternal:
+
+### Development v.s. Production
+
+- Dalam **pengembangan** ( `npm run dev` atau `yarn dev` ), `getStaticPaths` berjalan pada _setiap permintaan_.
+- Dalam **produksi**, `getStaticPaths` berjalan saat _build time_.
+
+### Fallback
+
+Ingat bahwa, kita mengembalikan `fallback: false` dari `getStaticPaths`. Apa artinya ini?
+
+Jika `fallback` adalah `false`, maka setiap _path_ tidak dikembalikan oleh `getStaticPaths` akan menghasilkan **halaman 404**.
+
+Jika `fallback` adalah `true`, maka perilaku `getStaticProps` berubah:
+
+- Path yang dikembalikan dari `getStaticPaths` akan dirender ke HTML saat build time.
+- Path yang belum dibuat pada build time **tidak** akan menghasilkan halaman 404. Sebagai gantinya, Next.js akan melayani versi “fallback” dari halaman pada permintaan pertama ke path tersebut.
+- Di latar belakang, Next.js akan secara statis menghasilkan path yang diminta. Permintaan selanjutnya ke path yang sama akan melayani halaman yang dihasilkan, sama seperti halaman lain yang di rendered pada saat build time.
+
+Ini adalah di luar lingkup pelajaran ini, tetapi Anda dapat mempelajari lebih lanjut tentang `fallback: true` di [dokumentasi fallback](https://nextjs.org/docs/basic-features/data-fetching#fallback-pages).
+
+### Catch-all Routes
+
+Rute dinamis dapat diperluas untuk catch semua path dengan menambahkan tiga titik ( `...` ) di dalam tanda kurung. Sebagai contoh:
+
+- `pages/posts/[...id].js` cocok dengan `/posts/a`, tetapi juga `/posts/a/b`, `/posts/a/b/c` dan sebagainya.
+- Jika Anda melakukan ini, dalam `getStaticPaths`, Anda harus mengembalikan array sebagai nilai dari kunci `id` seperti:
+
+```javascript
+return [
+  {
+    params: {
+      // Statically Generates /posts/a/b/c
+      id: ["a", "b", "c"]
+    }
+  }
+  //...
+];
+```
+
+Dan `params.id` akan menjadi array di `getStaticProps`:
+
+```javascript
+export async function getStaticProps({ params }) {
+  // params.id will be like ['a', 'b', 'c']
+}
+```
+
+Lihatlah dokumentasi [Rute Dinamis](https://nextjs.org/docs/routing/dynamic-routes) untuk mempelajari lebih lanjut.
+
+### Router
+
+Jika Anda ingin mengakses router Next.js, Anda dapat melakukannya dengan mengimpor `useRouter` hook dari `next/router`. Lihatlah [dokumentasi router](https://nextjs.org/docs/routing/dynamic-routes) untuk mempelajari lebih lanjut.
+
+### Halaman 404
+
+Untuk membuat halaman 404 khusus, buat `pages/404.js`. File ini dihasilkan secara statis saat build time.
+
+```javascript
+// pages/404.js
+export default function Custom404() {
+  return <h1>404 - Page Not Found</h1>;
+}
+```
+
+Lihatlah dokumentasi [Halaman Kesalahan](https://nextjs.org/docs/advanced-features/custom-error-page#404-page) untuk mempelajari lebih lanjut.
+
+### Lebih banyak contoh
+
+Kami telah membuat beberapa contoh untuk mengilustrasikan `getStaticProps` dan `getStaticPaths` - lihat kode sumbernya untuk mempelajari lebih lanjut:
+
+- [Blog Starter using markdown files](https://github.com/vercel/next.js/tree/canary/examples/blog-starter) ([Demo](https://next-blog-starter.now.sh/))
+- [DatoCMS Example](https://github.com/vercel/next.js/tree/canary/examples/cms-datocms) ([Demo](https://next-blog-datocms.now.sh/))
+- [TakeShape Example](https://github.com/vercel/next.js/tree/canary/examples/cms-takeshape) ([Demo](https://next-blog-takeshape.now.sh/))
+- [Sanity Example](https://github.com/vercel/next.js/tree/canary/examples/cms-sanity) ([Demo](https://next-blog-sanity.now.sh/))
+
+Dalam pelajaran berikutnya, kita akan pelajari tentang fitur API Routes untuk Next.js.
