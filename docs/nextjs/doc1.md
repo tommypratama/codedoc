@@ -76,7 +76,7 @@ Lalu, buka url http://localhost:3000 pada browser.
 Mari kita coba edit halaman starter.
 
 - Pastikan server pengembangan Next.js masih berjalan.
-- Buka pages/index.jsdengan editor teks Anda.
+- Buka `pages/index.js` dengan editor teks Anda.
 - Temukan teks yang bertuliskan **"Welcome to"** di bawah tag `<h1>` dan ubah menjadi **"Learn"** .
 - Simpan file.
 

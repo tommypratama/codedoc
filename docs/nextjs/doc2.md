@@ -65,13 +65,13 @@ Di Next.js, Anda menggunakan React Component `<Link>` yang membungkus tag `<a>`.
 
 Pertama, dalam `pages/index.js`, impor komponen `Link` dari `next/link` dengan menambahkan baris ini di bagian paling atas:
 
-```javascript title="pages/posts/first-post.js"
+```javascript title="pages/index.js"
 import Link from "next/link";
 ```
 
 Kemudian modifikasi baris ini di tag `h1`:
 
-```javascript title="pages/posts/first-post.js"
+```javascript title="pages/index.js"
 Learn <a href="https://nextjs.org">Next.js!</a>
 ```
 
