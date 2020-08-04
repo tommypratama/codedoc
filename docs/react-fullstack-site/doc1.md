@@ -110,24 +110,24 @@ Lalu tambahkan kode berikut:
 import React from "react";
 
 const AboutPage = () => (
-	<>
-		<h1>About Me</h1>
-		<p>
-			Welcome to my blog! Lorem ipsum, dolor sit amet consectetur adipisicing
-			elit. Autem dolores similique ea perferendis quae repudiandae architecto
-			totam laudantium et odio? Pariatur nihil modi repellendus atque reiciendis
-			at accusantium dolore! Exercitationem voluptas rem sequi aperiam! Ratione
-			explicabo vero numquam, dolores facilis consectetur autem nulla hic
-			perferendis rerum aliquid. Placeat, exercitationem tempora.
-		</p>
-		<p>
-			Autem dolores similique ea perferendis quae repudiandae architecto totam
-			laudantium et odio? Pariatur nihil modi repellendus atque reiciendis at
-			accusantium dolore! Exercitationem voluptas rem sequi aperiam! Ratione
-			explicabo vero numquam, dolores facilis consectetur autem nulla hic
-			perferendis rerum aliquid. Placeat, exercitationem tempora.
-		</p>
-	</>
+  <>
+    <h1>About Me</h1>
+    <p>
+      Welcome to my blog! Lorem ipsum, dolor sit amet consectetur adipisicing
+      elit. Autem dolores similique ea perferendis quae repudiandae architecto
+      totam laudantium et odio? Pariatur nihil modi repellendus atque reiciendis
+      at accusantium dolore! Exercitationem voluptas rem sequi aperiam! Ratione
+      explicabo vero numquam, dolores facilis consectetur autem nulla hic
+      perferendis rerum aliquid. Placeat, exercitationem tempora.
+    </p>
+    <p>
+      Autem dolores similique ea perferendis quae repudiandae architecto totam
+      laudantium et odio? Pariatur nihil modi repellendus atque reiciendis at
+      accusantium dolore! Exercitationem voluptas rem sequi aperiam! Ratione
+      explicabo vero numquam, dolores facilis consectetur autem nulla hic
+      perferendis rerum aliquid. Placeat, exercitationem tempora.
+    </p>
+  </>
 );
 
 export default AboutPage;
@@ -137,9 +137,9 @@ export default AboutPage;
 import React from "react";
 
 const ArticlesList = () => (
-	<>
-		<h1>Articles</h1>
-	</>
+  <>
+    <h1>Articles</h1>
+  </>
 );
 
 export default ArticlesList;
@@ -149,10 +149,109 @@ export default ArticlesList;
 import React from "react";
 
 const ArticlePage = () => (
-	<>
-		<h1>This is an article</h1>
-	</>
+  <>
+    <h1>This is an article</h1>
+  </>
 );
 
 export default ArticlePage;
+```
+
+Kemudian Import pada `App.js`, dan terapkan Router:
+
+```javascript title="src/App.js"
+import React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+// highlight-start
+import AboutPage from "./pages/AboutPage";
+import ArticlesList from "./pages/ArticlesList";
+import ArticlePage from "./pages/ArticlePage";
+// highlight-end
+
+class App extends React.Component {
+  render() {
+    return (
+      <>
+        <Router>
+          <div clasname="App">
+            // highlight-start
+            <div id="page-body">
+              <Route path="/" component={HomePage} exact />
+              <Route path="/about" component={AboutPage} />
+              <Route path="/articles-list" component={ArticlesList} />
+              <Route path="/article" component={ArticlePage} />
+            </div>
+            // highlight-end
+          </div>
+        </Router>
+      </>
+    );
+  }
+}
+
+export default App;
+```
+
+### Using react-router links
+
+Buat Component `NavBar`
+
+```javascript title="src/NavBar.js"
+import React from "react";
+import { Link } from "react-router-dom";
+
+const NavBar = () => (
+	<nav>
+		<ul>
+			<li>
+				<Link to="/">Home</Link>
+			</li>
+			<li>
+				<Link to="/about">About</Link>
+			</li>
+			<li>
+				<Link to="/articles-list">Articles</Link>
+			</li>
+		</ul>
+	</nav>
+);
+
+export default NavBar;
+```
+
+Lalu Import pada `App.js`
+
+```javascript title="src/App.js"
+import React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
+import ArticlesList from "./pages/ArticlesList";
+import ArticlePage from "./pages/ArticlePage";
+// highlight-next-line
+import NavBar from "./NavBar";
+
+class App extends React.Component {
+	render() {
+		return (
+			<>
+				<Router>
+          <div clasname="App">
+            // highlight-next-line
+						<NavBar />
+						<div id="page-body">
+							<Route path="/" component={HomePage} exact />
+							<Route path="/about" component={AboutPage} />
+							<Route path="/articles-list" component={ArticlesList} />
+							<Route path="/article" component={ArticlePage} />
+						</div>
+					</div>
+				</Router>
+			</>
+		);
+	}
+}
+
+export default App;
 ```
