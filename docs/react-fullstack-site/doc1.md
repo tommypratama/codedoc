@@ -106,72 +106,53 @@ touch AboutPage.js ArticlePage.js ArticlesList.js
 
 Lalu tambahkan kode berikut:
 
-<Tabs
-groupId="code"
-defaultValue="code1"
-values={[
-{label: 'AboutPage.js', value: 'code1'},
-{label: 'ArticlesList.js', value: 'code2'},
-{label: 'ArticlePage.js', value: 'code3'},
-]
-}>
-
-<TabItem value="code1">
-```javascript
+```javascript title="src/pages/AboutPage.js"
 import React from "react";
 
 const AboutPage = () => (
-<>
-<h1>About Me</h1>
-<p>
-Welcome to my blog! Lorem ipsum, dolor sit amet consectetur adipisicing
-elit. Autem dolores similique ea perferendis quae repudiandae architecto
-totam laudantium et odio? Pariatur nihil modi repellendus atque reiciendis
-at accusantium dolore! Exercitationem voluptas rem sequi aperiam! Ratione
-explicabo vero numquam, dolores facilis consectetur autem nulla hic
-perferendis rerum aliquid. Placeat, exercitationem tempora.
-</p>
-<p>
-Autem dolores similique ea perferendis quae repudiandae architecto totam
-laudantium et odio? Pariatur nihil modi repellendus atque reiciendis at
-accusantium dolore! Exercitationem voluptas rem sequi aperiam! Ratione
-explicabo vero numquam, dolores facilis consectetur autem nulla hic
-perferendis rerum aliquid. Placeat, exercitationem tempora.
-</p>
-</>
+	<>
+		<h1>About Me</h1>
+		<p>
+			Welcome to my blog! Lorem ipsum, dolor sit amet consectetur adipisicing
+			elit. Autem dolores similique ea perferendis quae repudiandae architecto
+			totam laudantium et odio? Pariatur nihil modi repellendus atque reiciendis
+			at accusantium dolore! Exercitationem voluptas rem sequi aperiam! Ratione
+			explicabo vero numquam, dolores facilis consectetur autem nulla hic
+			perferendis rerum aliquid. Placeat, exercitationem tempora.
+		</p>
+		<p>
+			Autem dolores similique ea perferendis quae repudiandae architecto totam
+			laudantium et odio? Pariatur nihil modi repellendus atque reiciendis at
+			accusantium dolore! Exercitationem voluptas rem sequi aperiam! Ratione
+			explicabo vero numquam, dolores facilis consectetur autem nulla hic
+			perferendis rerum aliquid. Placeat, exercitationem tempora.
+		</p>
+	</>
 );
 
 export default AboutPage;
-
 ```
-</TabItem>
 
-<TabItem value="code2">
-```javascript
+```javascript title="src/pages/ArticlePage.js"
 import React from "react";
 
 const ArticlesList = () => (
-  <>
-    <h1>Articles</h1>
-  </>
+	<>
+		<h1>Articles</h1>
+	</>
 );
 
 export default ArticlesList;
-
 ```
-</TabItem>
 
-<TabItem value="code3">
-```javascript
+```javascript title="src/pages/ArticlesList.js"
 import React from "react";
 
 const ArticlePage = () => (
-  <>
-    <h1>This is an article</h1>
-  </>
+	<>
+		<h1>This is an article</h1>
+	</>
 );
 
 export default ArticlePage;
 ```
-</TabItem>
-</Tabs>
