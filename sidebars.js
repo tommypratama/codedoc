@@ -6,8 +6,19 @@ module.exports = {
       "vuejs-building-interfaces/doc2",
       "vuejs-building-interfaces/doc3",
       "vuejs-building-interfaces/doc4",
-      "vuejs-building-interfaces/doc5",
+      "vuejs-building-interfaces/doc5"
     ],
-    "Next.js": ["nextjs/doc1", "nextjs/doc2", "nextjs/doc3", "nextjs/doc4", "nextjs/doc5", "nextjs/doc6", "nextjs/doc7"],
-  },
+    "Next.js": [
+      "nextjs/doc1",
+      "nextjs/doc2",
+      "nextjs/doc3",
+      "nextjs/doc4",
+      "nextjs/doc5",
+      "nextjs/doc6",
+      "nextjs/doc7"
+    ],
+    "React: Creating and Hosting a Full-Stack Site": [
+      "react-fullstack-site/doc1"
+    ]
+  }
 };
