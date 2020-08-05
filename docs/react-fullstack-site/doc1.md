@@ -1,10 +1,8 @@
 ---
 id: doc1
-title: Draft
-slug: draft
+title: Creating a React Front End
+slug: creating-a-react-front-end
 ---
-
-## Creating a React Front End
 
 ### Creating the app component
 
