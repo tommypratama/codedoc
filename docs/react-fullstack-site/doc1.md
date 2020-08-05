@@ -523,3 +523,90 @@ const ArticlePage = ({ match }) => {
 
 export default ArticlePage;
 ```
+
+### Creating a 404 page in React
+
+Buat component baru untuk menampilkan halaman 404 di dalam folder `pages`
+
+```javascript title="src/pages/NotFoundPage.js"
+import React from "react";
+
+const NotFoundPage = () => <h1>404: Page Not Found</h1>;
+
+export default NotFoundPage;
+```
+
+Kemudian tambahkan `Route` baru ke `App.js`
+
+```javascript title="src/App.js"
+import React from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
+import ArticlesListPage from "./pages/ArticlesListPage";
+import ArticlePage from "./pages/ArticlePage";
+// highlight-next-line
+import NotFoundPage from "./pages/NotFoundPage";
+import NavBar from "./NavBar";
+
+class App extends React.Component {
+  render() {
+    return (
+      <>
+        <Router>
+          <div clasname="App">
+            <NavBar />
+            <div id="page-body">
+              // highlight-next-line
+              <Switch>
+                <Route path="/" component={HomePage} exact />
+                <Route path="/about" component={AboutPage} />
+                <Route path="/articles-list" component={ArticlesListPage} />
+                <Route path="/article/:name" component={ArticlePage} />
+                // highlight-next-line
+                <Route component={NotFoundPage} />
+                // highlight-next-line
+              </Switch>
+            </div>
+          </div>
+        </Router>
+      </>
+    );
+  }
+}
+
+export default App;
+```
+
+Dan import juga pada `ArticlePage.js`
+
+```javascript title="src/pages/NotFoundPage"
+import React from "react";
+import ArticlesList from "../components/ArticlesList";
+// highlight-next-line
+import NotFoundPage from "./NotFoundPage";
+import articleContent from "./article-content";
+
+const ArticlePage = ({ match }) => {
+  const name = match.params.name;
+  const article = articleContent.find(article => article.name === name);
+
+  // highlight-next-line
+  if (!article) return <NotFoundPage />;
+
+  const otherArticles = articleContent.filter(article => article.name !== name);
+
+  return (
+    <>
+      <h1>{article.title}</h1>
+      {article.content.map((paragraph, key) => (
+        <p key={key}>{paragraph}</p>
+      ))}
+      <h3>Other Articles:</h3>
+      <ArticlesList articles={otherArticles} />
+    </>
+  );
+};
+
+export default ArticlePage;
+```
