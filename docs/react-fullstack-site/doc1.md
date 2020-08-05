@@ -406,3 +406,123 @@ const ArticlesList = () => (
 
 export default ArticlesList;
 ```
+
+### Making the articles list modular
+
+- Pertama, rename nama file `ArticlesList.js` menjadi `ArticlesListPage.js`
+- Ubah nama component `ArticlesList` menjadi `ArticlesListPage`
+
+Kemudian pada `App.js`, ubah juga nama component dan pathnya
+
+```javascript title="src/App.js"
+import React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import HomePage from "./pages/HomePage";
+import AboutPage from "./pages/AboutPage";
+import ArticlesListPage from "./pages/ArticlesListPage";
+import ArticlePage from "./pages/ArticlePage";
+import NavBar from "./NavBar";
+
+class App extends React.Component {
+  render() {
+    return (
+      <>
+        <Router>
+          <div clasname="App">
+            <NavBar />
+            <div id="page-body">
+              <Route path="/" component={HomePage} exact />
+              <Route path="/about" component={AboutPage} />
+              <Route path="/articles-list" component={ArticlesListPage} />
+              <Route path="/article/:name" component={ArticlePage} />
+            </div>
+          </div>
+        </Router>
+      </>
+    );
+  }
+}
+
+export default App;
+```
+
+Buat folder dengan nama `components` dan buat file baru `ArticlesList.js`:
+
+```javascript title="src/components/ArticlesList.js"
+import React from "react";
+import { Link } from "react-router-dom";
+
+const ArticlesList = ({ articles }) => (
+  <>
+    {articles.map((article, key) => (
+      <Link
+        className="article-list-item"
+        key={key}
+        to={`/article/${article.name}`}
+      >
+        <h3>{article.title}</h3>
+        <p>{article.content[0].substring(0, 150)}...</p>
+      </Link>
+    ))}
+  </>
+);
+
+export default ArticlesList;
+```
+
+Lalu import component tersebut ke `ArticlesListPage.js`
+
+```javascript title="src/pages/ArticlesListPage.js"
+import React from "react";
+// highlight-next-line
+import ArticlesList from "../components/ArticlesList";
+import articleContent from "./article-content";
+
+const ArticlesListPage = () => (
+  <>
+    <h1>Articles</h1>
+    // highlight-next-line
+    <ArticlesList articles={articleContent} />
+  </>
+);
+
+export default ArticlesListPage;
+```
+
+Buat related article
+
+```javascript title="src/pages/ArticlePage.js"
+import React from "react";
+// highlight-next-line
+import ArticlesList from "../components/ArticlesList";
+import articleContent from "./article-content";
+
+const ArticlePage = ({ match }) => {
+	const name = match.params.name;
+	const article = articleContent.find((article) => article.name === name);
+
+	if (!article) return <h1>Article does not exist</h1>;
+
+  // highlight-start
+	const otherArticles = articleContent.filter(
+		(article) => article.name !== name
+  );
+  // highlight-end
+
+	return (
+		<>
+			<h1>{article.title}</h1>
+			{article.content.map((paragraph, key) => (
+				<p key={key}>{paragraph}</p>
+      ))}
+      // highlight-start
+			<h3>Other Articles:</h3>
+      <ArticlesList articles={otherArticles} />
+      // highlight-end
+		</>
+	);
+};
+
+export default ArticlePage;
+
+```
