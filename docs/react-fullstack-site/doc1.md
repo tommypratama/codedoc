@@ -376,3 +376,34 @@ const ArticlePage = ({ match }) => {
 
 export default ArticlePage;
 ```
+
+### Creating and linking the articles list
+
+Tampilkan list article
+
+```javascript title="src/pages/ArticlesList.js"
+import React from "react";
+// highlight-next-line
+import { Link } from "react-router-dom";
+import articleContent from "./article-content";
+
+const ArticlesList = () => (
+	<>
+    <h1>Articles</h1>
+    // highlight-start
+		{articleContent.map((article, key) => (
+			<Link
+				className="article-list-item"
+				key={key}
+				to={`/article/${article.name}`}
+			>
+				<h3>{article.title}</h3>
+				<p>{article.content[0].substring(0, 150)}...</p>
+			</Link>
+    ))}
+    // highlight-end
+	</>
+);
+
+export default ArticlesList;
+```
