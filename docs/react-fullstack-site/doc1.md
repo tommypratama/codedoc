@@ -256,6 +256,8 @@ class App extends React.Component {
 export default App;
 ```
 
+### URL parameters with react-router
+
 Tambahkan parameter `:name` pada path component `ArticlePage`:
 
 ```javascript title="src/App.js"
@@ -373,7 +375,4 @@ const article = articleContent.find((article) => article.name === name);
 };
 
 export default ArticlePage;
-
-```
-
 ```
