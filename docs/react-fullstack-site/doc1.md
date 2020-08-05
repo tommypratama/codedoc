@@ -498,31 +498,28 @@ import ArticlesList from "../components/ArticlesList";
 import articleContent from "./article-content";
 
 const ArticlePage = ({ match }) => {
-	const name = match.params.name;
-	const article = articleContent.find((article) => article.name === name);
+  const name = match.params.name;
+  const article = articleContent.find(article => article.name === name);
 
-	if (!article) return <h1>Article does not exist</h1>;
+  if (!article) return <h1>Article does not exist</h1>;
 
   // highlight-start
-	const otherArticles = articleContent.filter(
-		(article) => article.name !== name
-  );
+  const otherArticles = articleContent.filter(article => article.name !== name);
   // highlight-end
 
-	return (
-		<>
-			<h1>{article.title}</h1>
-			{article.content.map((paragraph, key) => (
-				<p key={key}>{paragraph}</p>
+  return (
+    <>
+      <h1>{article.title}</h1>
+      {article.content.map((paragraph, key) => (
+        <p key={key}>{paragraph}</p>
       ))}
       // highlight-start
-			<h3>Other Articles:</h3>
+      <h3>Other Articles:</h3>
       <ArticlesList articles={otherArticles} />
       // highlight-end
-		</>
-	);
+    </>
+  );
 };
 
 export default ArticlePage;
-
 ```
