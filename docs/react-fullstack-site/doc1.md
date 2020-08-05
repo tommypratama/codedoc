@@ -355,6 +355,7 @@ Dan, gunakan data tersebut pada component `ArticlePage`
 import React from "react";
 // highlight-next-line
 import articleContent from "./article-content";
+
 // highlight-start
 const ArticlePage = ({ match }) => {
 	const name = match.params.name;
@@ -368,7 +369,7 @@ const ArticlePage = ({ match }) => {
 			{article.content.map((paragraph, key) => (
 				<p key={key}>{paragraph}</p>
       ))}
-      // highlight-end
+// highlight-end
 		</>
 	);
 };
