@@ -770,3 +770,64 @@ Hey! Tommy
 ```
 
 ### Upvoting articles
+
+Buat fake data dengan json object
+
+```javascript
+const articlesInfo = {
+  "learn-react": {
+    upvotes: 0
+  },
+  "learn-node": {
+    upvotes: 0
+  },
+  "learn-api": {
+    upvotes: 0
+  }
+};
+```
+
+Buat endpoint baru untuk mengupdate upvote pada arrticle.
+
+```javascript title="src/server.js"
+import express from "express";
+import bodyParser from "body-parser";
+
+const app = express();
+app.use(bodyParser.json());
+
+app.post("/api/articles/:name/upvote", (req, res) => {
+  const articleName = req.params.name;
+
+  articlesInfo[articleName].upvotes += 1;
+  res
+    .status(200)
+    .send(
+      `${articleName} now has ${articlesInfo[articleName].upvotes} upvotes`
+    );
+});
+
+app.listen(8000, () => console.log("Listening on port 8000"));
+```
+
+Restart server.
+
+Kembali ke postman, dan kirimkan post request dengan url:
+
+```bash
+http://localhost:8000/api/articles/learn-react/upvote
+```
+
+Pilih send, maka akan muncul output seperti berikut:
+
+```bash
+learn-react now has 1 upvotes
+```
+
+Coba kirimkan beberapa kali, maka nilai upvotes akan berubah.
+
+Coba kirimkan request dengan url lainnya:
+
+```bash
+http://localhost:8000/api/articles/learn-node/upvote
+```
