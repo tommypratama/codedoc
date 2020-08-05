@@ -608,3 +608,130 @@ const ArticlePage = ({ match }) => {
 
 export default ArticlePage;
 ```
+
+## Creating a Node Back End
+
+### Setting up an Express server
+
+- Buat direktori baru dengan nama `backend`. Jadi sekarang kita memiliki dua direktori, yaitu `my-blog` dan `backend`.
+
+Cd ke direktori `backend`, dan init npm.
+
+```bash
+npm init -y
+```
+
+Install Express
+
+```bash
+npm i --save express
+```
+
+Buat folder dan file baru `src/server.js`.
+
+Install Babel:
+
+```bash
+npm i --save-dev @babel/core @babel/node @babel/preset-env
+```
+
+Buat file baru pada direktori top-level : `.babelrc`
+
+```javascript title=".babelrc"
+{
+  "presets": ["@babel/preset-env"]
+}
+```
+
+Kemudian pada file `server.js` tambahkan kode berikut:
+
+```javascript title="src/server.js"
+import express from "express";
+
+const app = express();
+
+app.get("/hello", (req, res) => res.send("Hello!"));
+
+app.listen(8000, () => console.log("Listening on port 8000"));
+```
+
+Kemudian run pada terminal
+
+```bash
+npx babel-node src/server.js
+```
+
+Buka browser, lihat pada url berikut
+
+```bash
+http://localhost:800/hello
+```
+
+### Testing an Express server with Postman
+
+Gunakan aplikasi Insomnia atau Postman untuk mengetest response api dengan url di atas yang baru saja dibuat.
+
+Buat route untuk `post` data pada `server.js`
+
+```javascript title="src/server.js"
+import express from "express";
+
+const app = express();
+
+app.get("/hello", (req, res) => res.send("Hello!"));
+// highlight-next-line
+app.post("/hello", (req, res) => res.send("Hello!"));
+
+app.listen(8000, () => console.log("Listening on port 8000"));
+```
+
+Testing dengan postman
+
+- Ganti method post
+- Untuk mengirim data, gunakan `Body` dan text pilih JSON.
+
+Buat data dengan format JSON untuk mengirimkan post
+
+```javascript
+{
+  "name": "Tommy"
+}
+```
+
+Untuk dapat mengirimkan data dalam format json, Install NPM Module `body-parser`
+
+```bash
+npm install --save body-parser
+```
+
+Import `body-parser` pada `server.js`
+
+```javascript title="src/server.js"
+import express from "express";
+// highlight-next-line
+import bodyParser from "body-parser";
+
+const app = express();
+// highlight-next-line
+app.use(bodyParser.json());
+
+app.get("/hello", (req, res) => res.send("Hello!"));
+// highlight-next-line
+app.post("/hello", (req, res) => res.send(`Hello ${req.body.name}!`));
+
+app.listen(8000, () => console.log("Listening on port 8000"));
+```
+
+Restart server, dan jalankan kembali
+
+```bash
+npx babel-node src/server.js
+```
+
+Buat request dengan postman dengan data json yang sudah dibuat. Pilih **send**.
+
+Maka muncul output:
+
+```javascript
+Hello Tommy!
+```
