@@ -735,3 +735,38 @@ Maka muncul output:
 ```javascript
 Hello Tommy!
 ```
+
+### Route parameters in Express
+
+Untuk dapat menggunakan route parameters pada url, tambahkan kode berikut:
+
+```javascript title="src/server.js"
+import express from "express";
+import bodyParser from "body-parser";
+
+const app = express();
+app.use(bodyParser.json());
+
+app.get("/hello", (req, res) => res.send("Hello!"));
+// highlight-next-line
+app.get("/hello:name", (req, res) => res.send(`Hey! ${req.params.name}`));
+app.post("/hello", (req, res) => res.send(`Hello ${req.body.name}!`));
+
+app.listen(8000, () => console.log("Listening on port 8000"));
+```
+
+Restart server.
+
+Kembali ke postman, dan kirim get request dengan url berikut:
+
+```bash
+http://localhost:8000/hello/Tommy
+```
+
+Maka akan muncul output seperti berikut
+
+```bash
+Hey! Tommy
+```
+
+### Upvoting articles
