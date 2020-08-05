@@ -348,3 +348,30 @@ const articles = [
 export default articles;
 
 ```
+
+Dan, gunakan data tersebut pada component `ArticlePage`
+
+```javascript title="src/pages/ArticlePage.js"
+import React from "react";
+// highlight-next-line
+import articleContent from "./article-content";
+// highlight-start
+const ArticlePage = ({ match }) => {
+	const name = match.params.name;
+	const article = articleContent.find((article) => article.name === name);
+
+	if (!article) return <h1>Article does not exist</h1>;
+
+	return (
+		<>
+			<h1>{article.title}</h1>
+			{article.content.map((paragraph, key) => (
+				<p key={key}>{paragraph}</p>
+      ))}
+      // highlight-end
+		</>
+	);
+};
+
+export default ArticlePage;
+```
