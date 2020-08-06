@@ -793,6 +793,20 @@ Buat endpoint baru untuk mengupdate upvote pada arrticle.
 import express from "express";
 import bodyParser from "body-parser";
 
+// highlight-start
+const articlesInfo = {
+  "learn-react": {
+    upvotes: 0
+  },
+  "learn-node": {
+    upvotes: 0
+  },
+  "learn-api": {
+    upvotes: 0
+  }
+};
+// highlight-end
+
 const app = express();
 app.use(bodyParser.json());
 
@@ -831,3 +845,101 @@ Coba kirimkan request dengan url lainnya:
 ```bash
 http://localhost:8000/api/articles/learn-node/upvote
 ```
+
+### Automatically updating with nodemon
+
+Setiap kali membuat perubahan pada code, kita harus me-restart server. Untuk mengatasi ini, install paket `nodemon`:
+
+```bash
+npm install --save-dev nodemon
+```
+
+Lalu pada `package.json`, tambahkan script berikut di atas `test`
+
+```javascript title="package.json"
+"start": "npx nodemon --exec npx babel-node src/server.js", 
+```
+
+Kemudian jalankan `npm start`
+
+### Adding comments functionality
+
+- Untuk dapat menggunakan fungsionalitas komentar, tambahkan properti `comments` pada data `articlesInfo`
+- Tambahkan route
+
+```javascript title="src/server.js"
+import express from "express";
+import bodyParser from "body-parser";
+
+const articlesInfo = {
+  "learn-react": {
+    upvotes: 0,
+    comments: [],
+  },
+  "learn-node": {
+    upvotes: 0,
+    comments: [],
+  },
+  "learn-api": {
+    upvotes: 0,
+    comments: [],
+  }
+};
+
+const app = express();
+app.use(bodyParser.json());
+
+app.post("/api/articles/:name/upvote", (req, res) => {
+  const articleName = req.params.name;
+
+  articlesInfo[articleName].upvotes += 1;
+  res
+    .status(200)
+    .send(
+      `${articleName} now has ${articlesInfo[articleName].upvotes} upvotes`
+    );
+});
+
+// highlight-start
+app.post('/api/articles/:name/add-comment', (req, res) => {
+  const { username, text } = req.body;
+  const articleName = req.params.name;
+
+  articlesInfo[articleName].comments.push({ userrname, text });
+
+  res.status(200).send(articlesInfo[articleName]);
+})
+// highlight-end
+
+app.listen(8000, () => console.log("Listening on port 8000"));
+```
+
+Lalu test endpoint yang baru saja dibuat dengan postman:
+
+Url
+
+```bash
+http://localhost:8000/api/articles/learn-node/add-comment
+```
+
+Lalu pada `Body`, Pilih format `raw` dan `JSON`.
+
+Kemudian isikan data berikut untuk mengirimkan post request
+
+```javascript
+{
+  "username": "me",
+  "text": "I love this article!"
+}
+```
+
+Lalu tambahkan isikan komentar dengan data lainnya
+
+```javascript
+{
+  "username": "tommy",
+  "text": "This is second comment"
+}
+```
+
+Lihat hasilnya, dan data akan terupdate.
