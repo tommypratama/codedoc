@@ -17,8 +17,6 @@ module.exports = {
       "nextjs/doc6",
       "nextjs/doc7"
     ],
-    "React: Creating and Hosting a Full-Stack Site": [
-      "react-fullstack-site/doc1"
-    ]
+    Tutorial: ["tutorial/doc1", "tutorial/doc2"]
   }
 };
